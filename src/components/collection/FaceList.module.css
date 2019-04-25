@@ -1,0 +1,84 @@
+.base {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 100px 15vw;
+  box-sizing: border-box;
+}
+
+.recentFaces {
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 16px;
+  flex: 0 0 auto;
+  margin-bottom: 50px;
+  overflow: hidden;
+  height: 250px;
+  padding: 0 10px;
+  will-change: transform;
+}
+
+.facePile {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  will-change: transform;
+}
+
+.recentFaces .facePile {
+  overflow: hidden;
+}
+
+.recentFaces .facePile > * {
+  margin-bottom: 1000px;
+}
+
+@media (max-width: 800px) {
+  .base {
+    padding: 30px;
+  }
+
+  .recentFaces {
+    height: 190px;
+  }
+
+  .facePile > * {
+    font-size: 80px !important;
+  }
+}
+
+.enter {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.enterActive {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms linear, transform 200ms ease;
+}
+
+.exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.exitActive {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 200ms linear, transform 200ms ease;
+}
+
+.facePile > * {
+  flex: 0 0 auto;
+  margin: 10px;
+}

@@ -1,0 +1,255 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Backend for Rekognition Demo
+
+# Rekognition collections don't currently exist in CFN so it
+# has to be created externally and passed in
+Parameters:
+  rekCollectionId:
+    Type: String
+    AllowedPattern: "^[a-z0-9\\-]+$"
+
+Resources:
+  cognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: false
+  userPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref cognitoUserPool
+
+  adminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref cognitoUserPool
+      RoleArn: !GetAtt adminRole.Arn
+      GroupName: admin
+
+  readOnlyGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref cognitoUserPool
+      RoleArn: !GetAtt readOnlyRole.Arn
+      GroupName: readOnly
+
+
+  cognitoIDPool:
+    Type: AWS::Cognito::IdentityPool
+    Properties:
+      AllowUnauthenticatedIdentities: false
+      CognitoIdentityProviders:
+        - ClientId: !Ref userPoolClient
+          ProviderName: !GetAtt cognitoUserPool.ProviderName
+
+  # # This has to be set dynamically by the updater script since
+  # # it relies on a dynamic key, which isn't possible in CFn.
+  # # The alternative would be to use a custom resource but then
+  # # that would require setting up a second stack just for that Lambda
+  # # see: https://forums.aws.amazon.com/thread.jspa?threadID=255584&tstart=0
+  # # and the notes around setUserPoolProvider in update.js
+  # cognitoRoleAttachment:
+  #   Type: AWS::Cognito::IdentityPoolRoleAttachment
+  #   Properties:
+  #     IdentityPoolId: !Ref cognitoIDPool
+  #     Roles:
+  #       authenticated: !GetAtt readOnlyRole.Arn
+  #     RoleMappings:
+  #       [THIS IS THE IMPOSSIBLE BIT]:
+  #         Type: Token
+  #         AmbiguousRoleResolution: AuthenticatedRole
+
+  adminRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRoleWithWebIdentity
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Condition:
+              StringEquals:
+                cognito-identity.amazonaws.com:aud: !Ref cognitoIDPool
+              ForAnyValue:StringLike:
+                cognito-identity.amazonaws.com:amr: authenticated
+      Policies:
+        - PolicyName: ddb
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !GetAtt ddbTable.Arn
+              - Effect: Allow
+                Action:
+                  - dynamodb:Query
+                Resource:
+                  - !Sub
+                    - "${tableArn}/index/${ddbTimeIndex}"
+                    - tableArn: !GetAtt ddbTable.Arn
+                      ddbTimeIndex: time
+        - PolicyName: rek
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - rekognition:IndexFaces
+                  - rekognition:SearchFacesByImage
+                  - rekognition:DeleteFaces
+                  - rekognition:ListFaces
+                Resource:
+                  - !Sub "arn:aws:rekognition:*:*:collection/${rekCollectionId}"
+              - Effect: Allow
+                Action:
+                  - rekognition:DetectFaces
+                Resource:
+                  - '*'
+        - PolicyName: s3-access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${s3Bucket}/*"
+
+  readOnlyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRoleWithWebIdentity
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Condition:
+              StringEquals:
+                cognito-identity.amazonaws.com:aud: !Ref cognitoIDPool
+              ForAnyValue:StringLike:
+                cognito-identity.amazonaws.com:amr: authenticated
+      Policies:
+        - PolicyName: ddb
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                Resource:
+                  - !GetAtt ddbTable.Arn
+              - Effect: Allow
+                Action:
+                  - dynamodb:Query
+                Resource:
+                  - !Sub
+                    - "${tableArn}/index/${ddbTimeIndex}"
+                    - tableArn: !GetAtt ddbTable.Arn
+                      ddbTimeIndex: time
+        - PolicyName: rek
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - rekognition:SearchFacesByImage
+                  - rekognition:ListFaces
+                Resource:
+                  - !Sub "arn:aws:rekognition:*:*:collection/${rekCollectionId}"
+              - Effect: Allow
+                Action:
+                  - rekognition:DetectFaces
+                Resource:
+                  - '*'
+        - PolicyName: s3-access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${s3Bucket}/*"
+
+  s3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          - AllowedOrigins:
+              - '*'
+            AllowedMethods:
+              - GET
+              - PUT
+            AllowedHeaders:
+              - '*'
+            ExposedHeaders:
+              - x-amz-server-side-encryption
+              - x-amz-request-id
+              - x-amz-id-2
+            MaxAge: 300
+
+  ddbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+        - AttributeName: dummy
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: time
+          KeySchema:
+            - AttributeName: dummy
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+Outputs:
+  s3BucketName:
+    Value: !Ref s3Bucket
+  ddbTableName:
+    Value: !Ref ddbTable
+  ddbTimeIndex:
+    Value: time
+  idPoolName:
+    Value: !Ref cognitoIDPool
+  userPool:
+    Value: !Ref cognitoUserPool
+  userPoolProvider:
+    Value: !GetAtt cognitoUserPool.ProviderName
+  userPoolClientId:
+    Value: !Ref userPoolClient
+  rekCollectionId:
+    Value: !Ref rekCollectionId
+  region:
+    Value: !Sub "${AWS::Region}"

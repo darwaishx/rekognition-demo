@@ -1,0 +1,83 @@
+.base {
+  display: flex;
+  flex-direction: row;
+  width: 80vw;
+  align-items: flex-start;
+  flex: 1 0 auto;
+  padding: 30px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.base:last-child {
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.image {
+  flex: 0 1 300px;
+  overflow: hidden;
+  position: sticky;
+  top: 30px;
+  margin-top: 30px;
+  font-size: 0;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.image img {
+  width: 100%;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.faces {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.faces > div {
+  margin: 1em;
+}
+
+.noFaces {
+
+}
+
+.right {
+  flex: 1 1 0;
+  margin-left: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+@media (max-width: 800px) {
+  .base {
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    padding: 0 1em;
+    box-sizing: border-box;
+  }
+
+  .image {
+    position: relative;
+    flex: 0 0 auto;
+    top: 0;
+  }
+
+  .right {
+    flex: 0 0 auto;
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,81 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: AmazonEmber;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #30414D;
+  color: #fff;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+
+@font-face {
+  font-family: AmazonEmber;
+  font-weight: normal;
+  font-style: normal;
+  src: url('./fonts/AmazonEmber_Rg.ttf') format('truetype');
+}
+@font-face {
+  font-family: AmazonEmber;
+  font-weight: normal;
+  font-style: italic;
+  src: url('./fonts/AmazonEmber_RgIt.ttf') format('truetype');
+}
+@font-face {
+  font-family: AmazonEmber;
+  font-weight: bold;
+  font-style: normal;
+  src: url('./fonts/AmazonEmber_Bd.ttf') format('truetype');
+}
+@font-face {
+  font-family: AmazonEmber;
+  font-weight: bold;
+  font-style: italic;
+  src: url('./fonts/AmazonEmber_BdIt.ttf') format('truetype');
+}
+@font-face {
+  font-family: AmazonEmber;
+  font-weight: 300;
+  font-style: normal;
+  src: url('./fonts/AmazonEmber_Lt.ttf') format('truetype');
+}
+@font-face {
+  font-family: AmazonEmber;
+  font-weight: 300;
+  font-style: italic;
+  src: url('./fonts/AmazonEmber_LtIt.ttf') format('truetype');
+}
+@font-face {
+  font-family: AmazonEmber;
+  font-weight: 100;
+  font-style: normal;
+  src: url('./fonts/AmazonEmber_Th.ttf') format('truetype');
+}
+@font-face {
+  font-family: AmazonEmber;
+  font-weight: 100;
+  font-style: italic;
+  src: url('./fonts/AmazonEmber_ThIt.ttf') format('truetype');
+}
+
+
+.styled-scrollbars ::-webkit-scrollbar {
+  background: transparent;
+  width: 8px;
+  height: 8px;
+}
+
+.styled-scrollbars ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.styled-scrollbars ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

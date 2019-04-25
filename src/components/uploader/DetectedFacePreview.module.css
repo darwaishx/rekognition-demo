@@ -1,0 +1,52 @@
+.base {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 8px 20px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.base.selected {
+  border-color: #0095ff;
+  /* border-image: linear-gradient(#00C6FF, #0095ff) 20; */
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 20px 0 rgba(0,0,0,0.30), 0 1px 2px 0 rgba(0,0,0,0.20);
+  opacity: 1;
+}
+
+.toggle {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2), inset 0 2px 1px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.05);
+  margin-bottom: 1em;
+  cursor: pointer;
+}
+
+.toggle path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-dasharray: 18;
+  stroke-dashoffset: 18;
+}
+
+.toggle.selected {
+  background: linear-gradient(#00C6FF, #0095ff);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.2), inset 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.toggle.selected path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 200ms 200ms ease;
+}
+
+@media (max-width: 800px) {
+  .base > div {
+    font-size: 80px !important;
+  }
+}

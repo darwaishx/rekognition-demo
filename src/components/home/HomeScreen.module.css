@@ -1,0 +1,106 @@
+.base {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  overflow: visible;
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.base:before, .base:after {
+  content: '';
+  flex: 1 0 0;
+}
+
+.base h1 {
+  font-weight: normal;
+  margin: 0 1em;
+  line-height: 1.5;
+  text-align: center;
+  font-size: 2em;
+  padding: 0;
+}
+
+.base h3 {
+  font-weight: normal;
+  font-size: 1em;
+  margin: 1em 1em 3em;
+  line-height: 1.5;
+}
+
+
+.enter {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.enterActive {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms linear, transform 200ms ease;
+}
+
+.exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.exitActive {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 200ms linear, transform 200ms ease;
+}
+
+.options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.options > * {
+  flex: 0 0 40%;
+  margin: 1em;
+}
+
+.options a {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 200ms ease;
+  transform: translateY(0);
+  text-decoration: none;
+}
+
+.icon {
+  background: #0095ff;
+  width: 120px;
+  height: 120px;
+  border-radius: 24px;
+  margin-bottom: 1em;
+  transition: box-shadow 200ms linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.options a:hover {
+  transform: translateY(-2px);
+}
+
+.options a:hover .icon {
+  background: #3fafff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}

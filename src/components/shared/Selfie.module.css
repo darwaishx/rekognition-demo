@@ -1,0 +1,47 @@
+.base {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #30414De4;
+  overflow: hidden;
+  margin: 0 !important;
+}
+
+@supports(backdrop-filter: blur(5px)) {
+  .base {
+    background: #30414Dbb;
+    backdrop-filter: blur(5px);
+  }
+}
+
+.base:before, .base:after {
+  content: '';
+  flex: 1 0 0;
+}
+
+.base div {
+  flex: 0 1 50%;
+  position: relative;
+  width: 80vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+
+.base video {
+  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); */
+  height: 100%;
+  width: 100%;
+  transform: scaleX(-1); /* selfie flip innit */
+}
+
+.base button {
+  margin-top: 1em;
+  line-height: 0
+}

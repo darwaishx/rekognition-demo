@@ -1,0 +1,35 @@
+.base {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.face {
+  fill: #fff;
+  fill-opacity: 0;
+  stroke: #fff;
+  stroke-width: 3;
+  cursor: pointer;
+}
+
+.face:hover {
+  stroke: #0f0;
+}
+
+.selected, .selected:hover {
+  stroke: #f00;
+}
+
+.panner {
+  transition: transform 600ms ease-in-out;
+}
+
+.processing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(30px);
+}

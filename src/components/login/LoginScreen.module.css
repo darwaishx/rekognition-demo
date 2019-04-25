@@ -1,0 +1,50 @@
+.base {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.base form {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  max-width: 80vw;
+}
+
+.base input {
+  font: inherit;
+  flex-shrink: 0;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background-color: #30414D;
+  background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0.2));
+  border: 1px solid #18242B;
+  box-shadow: inset 0 1px 1px 0 rgba(0,0,0,0.10), 0 1px 0 rgba(255,255,255,0.15);
+  color: white;
+}
+
+.base button {
+
+}
+
+.base label {
+  margin: 0 0 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.base label span {
+  font-size: .8em;
+  opacity: 0.8;
+  margin-bottom: 0.25em;
+  margin-left: 5px;
+}
